@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노래방 자막 생성기</title>
+    <title>노래방 자막 생성기 - 2줄 근본 시스템 (폰트 500)</title>
     <style>
         /* 사용자 요청 에이투지체(A2z) 폰트 로드 */
         @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-1Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
@@ -20,7 +20,7 @@
             margin: 0;
             padding: 0;
             font-family: 'A2z', sans-serif; 
-            font-weight: 400; /* 기본 굵기 */
+            font-weight: 400; 
             overflow: hidden;
             background-color: #2c3e50;
             color: white;
@@ -63,7 +63,7 @@
         }
 
         /* --------------------------------------
-           노래방 화면
+           노래방 화면 (2줄 교차)
            -------------------------------------- */
         #karaoke-screen {
             display: none; 
@@ -88,15 +88,15 @@
             width: 95%; 
         }
 
-        #wrapper1 { text-align: left; padding-left: 10px; } 
-        #wrapper2 { text-align: center; } 
-        #wrapper3 { text-align: right; padding-right: 20px; } 
+        /* 윗줄은 왼쪽, 아랫줄은 오른쪽 엇갈린 배치 */
+        #wrapper1 { text-align: left; padding-left: 50px; } 
+        #wrapper2 { text-align: right; padding-right: 50px; } 
 
         .lyric-box {
             position: relative;
             display: inline-block; 
             font-size: 100px; 
-            font-weight: 900; /* 가사는 가장 굵은 9Black 적용 */
+            font-weight: 500; /* <-- 요청하신 폰트 굵기 500으로 수정됨 */
             letter-spacing: 5px; 
             
             /* 깔끔한 테두리 */
@@ -150,12 +150,6 @@
                     <div class="text-fill"></div>
                 </div>
             </div>
-            <div class="line-wrapper" id="wrapper3">
-                <div class="lyric-box" id="line3">
-                    <div class="text-base"></div>
-                    <div class="text-fill"></div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -187,7 +181,6 @@
 
             setLineText(1, lyricsArray[0] || "");
             setLineText(2, lyricsArray[1] || "");
-            setLineText(3, lyricsArray[2] || "");
             
             document.getElementById('line1').classList.add('active-line');
         });
@@ -207,12 +200,12 @@
                 document.getElementById(`line${activeLine}`).classList.remove('active-line');
                 
                 const inactiveLine = activeLine; 
-                activeLine = (activeLine % 3) + 1; 
+                activeLine = (activeLine === 1) ? 2 : 1; 
                 
                 document.getElementById(`line${activeLine}`).classList.add('active-line');
                 fillProgress = 0; 
 
-                let nextLyricToLoad = lyricsArray[currentLyricIndex + 2] || "";
+                let nextLyricToLoad = lyricsArray[currentLyricIndex + 1] || "";
                 setLineText(inactiveLine, nextLyricToLoad);
             }
         });
