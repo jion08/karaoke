@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노래방 자막 생성기 - 레트로 감성 3줄</title>
+    <title>노래방 자막 생성기</title>
     <style>
-        @font-face {
-            font-family: 'DungGeunMo';
-            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
-        }
+        /* 사용자 요청 에이투지체(A2z) 폰트 로드 */
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-1Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-2ExtraLight.woff2') format('woff2'); font-weight: 200; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-3Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-4Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-5Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-6SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-7Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-8ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+        @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-9Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
 
         body {
             margin: 0;
             padding: 0;
-            /* 폰트 적용 */
-            font-family: 'DungGeunMo', sans-serif; 
+            font-family: 'A2z', sans-serif; 
+            font-weight: 400; /* 기본 굵기 */
             overflow: hidden;
             background-color: #2c3e50;
             color: white;
@@ -37,18 +41,20 @@
             max-width: 600px;
             height: 300px;
             padding: 15px;
-            font-size: 16px;
+            font-size: 18px;
             border-radius: 10px;
             border: none;
             resize: none;
             margin-bottom: 20px;
-            font-family: 'Malgun Gothic', sans-serif;
+            font-family: 'A2z', sans-serif;
+            font-weight: 500;
         }
 
         button {
             padding: 15px 30px;
-            font-size: 18px;
-            font-family: 'DungGeunMo', sans-serif;
+            font-size: 20px;
+            font-family: 'A2z', sans-serif;
+            font-weight: 700;
             color: white;
             background-color: #e74c3c;
             border: none;
@@ -57,18 +63,16 @@
         }
 
         /* --------------------------------------
-           노래방 화면 (요청하신 스타일 적용 부분)
+           노래방 화면
            -------------------------------------- */
         #karaoke-screen {
             display: none; 
             width: 100vw;
             height: 100vh;
-            /* 배경색: 짤방 느낌의 하늘색 */
-            background-color: #87CEEB; 
+            background-color: #87CEEB; /* 하늘색 배경 */
             position: relative;
         }
         
-        /* 가사 전체 영역 */
         .lyrics-container {
             position: absolute;
             bottom: 10%;
@@ -78,47 +82,41 @@
             align-items: center;
         }
 
-        /* 각 줄(Line)의 컨테이너 */
         .line-wrapper {
-            margin-bottom: 20px; /* 수직 간격 좁힘 */
-            height: 120px; /* 글자 크기에 맞춰 높임 */
-            width: 95%; /* 전체적으로 왼쪽에 가깝게 하기 위해 너비 늘림 */
+            margin-bottom: 20px; 
+            height: 120px; 
+            width: 95%; 
         }
 
-        /* 계단식 레이아웃: 윗줄 왼쪽, 중간줄 중앙, 아랫줄 오른쪽 */
-        /* 사용자의 "왼쪽으로 땅겨봐라" 요청 반영 */
-        #wrapper1 { text-align: left; padding-left: 10px; } /* 왼쪽 끝에 가깝게 */
-        #wrapper2 { text-align: center; } /* 중앙 */
-        #wrapper3 { text-align: right; padding-right: 20px; } /* 오른쪽 */
+        #wrapper1 { text-align: left; padding-left: 10px; } 
+        #wrapper2 { text-align: center; } 
+        #wrapper3 { text-align: right; padding-right: 20px; } 
 
-        /* 글자 껍데기 디자인: 깔끔한 테두리 */
         .lyric-box {
             position: relative;
             display: inline-block; 
-            font-size: 100px; /* 자막 크기 크게 */
-            letter-spacing: 5px; /* 자간 넓게 */
+            font-size: 100px; 
+            font-weight: 900; /* 가사는 가장 굵은 9Black 적용 */
+            letter-spacing: 5px; 
             
-            /* 이중 테두리 제거 후 text-shadow로 깔끔한 테두리 구현 */
+            /* 깔끔한 테두리 */
             text-shadow: 4px 4px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000;
         }
 
-        /* 기본 대기 색상 (흰색) */
         .text-base {
             color: white; 
         }
 
-        /* 색이 차오르는 부분 (짤방의 파란색 텍스트) */
         .text-fill {
             position: absolute;
             top: 0;
             left: 0;
-            color: #5DA4FF; /* 시원한 라이트 블루 */
+            color: #5DA4FF; 
             width: 0%; 
             overflow: hidden;
             white-space: nowrap;
         }
         
-        /* 현재 부르는 줄 통통 튀는 효과 */
         .active-line {
             transform: scale(1.05);
             transition: transform 0.2s;
@@ -128,7 +126,7 @@
 <body>
 
     <div id="input-screen">
-        <h2 style="font-family: 'DungGeunMo', sans-serif;">🎤 가사를 넣어주세요</h2>
+        <h2 style="font-weight: 800;">🎤 가사를 넣어주세요</h2>
         <textarea id="lyrics-input">정의당 심상정 거침없는 대개혁
 노동이 당당한 새로운 대한민국 우리의 선
 택은 5번 심상정
@@ -162,12 +160,10 @@
     </div>
 
     <script>
-        // 작동 로직은 이전과 동일하지만 3줄 순환 로직으로 확장되었습니다.
         let lyricsArray = [];
         let currentLyricIndex = 0;
-        let activeLine = 1; // 1, 2, 3 순환
+        let activeLine = 1; 
         
-        // 사용자가 바꾼 속도 적용
         let isPressing = false;
         let currentSpeed = 0;
         let fillProgress = 0; 
@@ -189,7 +185,6 @@
             document.getElementById('input-screen').style.display = 'none';
             document.getElementById('karaoke-screen').style.display = 'block';
 
-            // 첫 세 줄 미리 세팅
             setLineText(1, lyricsArray[0] || "");
             setLineText(2, lyricsArray[1] || "");
             setLineText(3, lyricsArray[2] || "");
@@ -200,7 +195,6 @@
         document.addEventListener('keydown', function(e) {
             if(e.repeat) return; 
 
-            // 사용자가 바꾼 속도 수치 적용 (0.2, 0.4, 0.7)
             if (e.key === '1') { isPressing = true; currentSpeed = 0.2; } 
             else if (e.key === '2') { isPressing = true; currentSpeed = 0.4; } 
             else if (e.key === '3') { isPressing = true; currentSpeed = 0.7; } 
@@ -210,19 +204,14 @@
 
                 currentLyricIndex++;
                 
-                // CSS 효과 제거
                 document.getElementById(`line${activeLine}`).classList.remove('active-line');
                 
-                // 활성 줄 교체 및 새 가사 장전
-                const inactiveLine = activeLine; // 방금 부른 줄
-                activeLine = (activeLine % 3) + 1; // 다음 활성 줄 (1->2, 2->3, 3->1)
+                const inactiveLine = activeLine; 
+                activeLine = (activeLine % 3) + 1; 
                 
-                // CSS 효과 추가
                 document.getElementById(`line${activeLine}`).classList.add('active-line');
-                fillProgress = 0; // 색칠 진행도 초기화
+                fillProgress = 0; 
 
-                // 방금 부른 줄에 다음 가사 장전 (현재 인덱스 + 활성 줄의 거리)
-                // 3줄 순환이므로, 방금 부른 줄에 로드할 가사는 (currentLyricIndex + 2)번째 가사입니다.
                 let nextLyricToLoad = lyricsArray[currentLyricIndex + 2] || "";
                 setLineText(inactiveLine, nextLyricToLoad);
             }
