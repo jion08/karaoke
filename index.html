@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노래방 자막 생성기 - 2줄 근본 시스템 (폰트 500)</title>
+    <title>노래방 자막 생성기 - 에이투지체 500 (디자인 개선)</title>
     <style>
         /* 사용자 요청 에이투지체(A2z) 폰트 로드 */
         @font-face { font-family: 'A2z'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-6@1.0/에이투지체-1Thin.woff2') format('woff2'); font-weight: 100; font-display: swap; }
@@ -63,7 +63,7 @@
         }
 
         /* --------------------------------------
-           노래방 화면 (2줄 교차)
+           노래방 화면 (디자인 개선 적용)
            -------------------------------------- */
         #karaoke-screen {
             display: none; 
@@ -75,7 +75,7 @@
         
         .lyrics-container {
             position: absolute;
-            bottom: 10%;
+            bottom: 15%;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -83,20 +83,22 @@
         }
 
         .line-wrapper {
-            margin-bottom: 20px; 
-            height: 120px; 
+            margin-bottom: 60px; /* 줄 간격 대폭 확대 */
+            height: 80px; /* 글자 크기에 맞춰 낮춤 */
             width: 95%; 
         }
 
-        /* 윗줄은 왼쪽, 아랫줄은 오른쪽 엇갈린 배치 */
-        #wrapper1 { text-align: left; padding-left: 50px; } 
-        #wrapper2 { text-align: right; padding-right: 50px; } 
+        /* 윗줄 왼쪽, 중간줄 중앙, 아랫줄 오른쪽 계단식 배치 */
+        /* 중앙에 가깝게 모으기 위해 padding 값을 늘림 */
+        #wrapper1 { text-align: left; padding-left: 150px; } /* 왼쪽 끝에서 더 띄움 */
+        #wrapper2 { text-align: center; } 
+        #wrapper3 { text-align: right; padding-right: 150px; } /* 오른쪽 끝에서 더 띄움 */
 
         .lyric-box {
             position: relative;
             display: inline-block; 
-            font-size: 100px; 
-            font-weight: 500; /* <-- 요청하신 폰트 굵기 500으로 수정됨 */
+            font-size: 60px; /* 자막 크기 축소 */
+            font-weight: 500; /* 폰트 굵기 500 유지 */
             letter-spacing: 5px; 
             
             /* 깔끔한 테두리 */
@@ -150,14 +152,22 @@
                     <div class="text-fill"></div>
                 </div>
             </div>
+            <div class="line-wrapper" id="wrapper3">
+                <div class="lyric-box" id="line3">
+                    <div class="text-base"></div>
+                    <div class="text-fill"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // 작동 로직은 이전과 동일하지만 CSS만 변경되었습니다.
         let lyricsArray = [];
         let currentLyricIndex = 0;
         let activeLine = 1; 
         
+        // 사용자가 바꾼 속도 적용
         let isPressing = false;
         let currentSpeed = 0;
         let fillProgress = 0; 
@@ -181,6 +191,7 @@
 
             setLineText(1, lyricsArray[0] || "");
             setLineText(2, lyricsArray[1] || "");
+            setLineText(3, lyricsArray[2] || "");
             
             document.getElementById('line1').classList.add('active-line');
         });
@@ -188,6 +199,7 @@
         document.addEventListener('keydown', function(e) {
             if(e.repeat) return; 
 
+            // 사용자가 바꾼 속도 수치 적용 (0.2, 0.4, 0.7)
             if (e.key === '1') { isPressing = true; currentSpeed = 0.2; } 
             else if (e.key === '2') { isPressing = true; currentSpeed = 0.4; } 
             else if (e.key === '3') { isPressing = true; currentSpeed = 0.7; } 
@@ -200,12 +212,12 @@
                 document.getElementById(`line${activeLine}`).classList.remove('active-line');
                 
                 const inactiveLine = activeLine; 
-                activeLine = (activeLine === 1) ? 2 : 1; 
+                activeLine = (activeLine % 3) + 1; 
                 
                 document.getElementById(`line${activeLine}`).classList.add('active-line');
                 fillProgress = 0; 
 
-                let nextLyricToLoad = lyricsArray[currentLyricIndex + 1] || "";
+                let nextLyricToLoad = lyricsArray[currentLyricIndex + 2] || "";
                 setLineText(inactiveLine, nextLyricToLoad);
             }
         });
